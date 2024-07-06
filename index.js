@@ -33,7 +33,9 @@ app.use(express.static(path.join(__dirname, "/public")));
 
 
 // Define a route for the root URL ("/")
-app.use("/", require("./src/routes/user_routes.js"));
+app.use("/user", require("./src/routes/user_routes.js"));
+
+app.use("/api", require("./src/routes/api_logs_routes.js"));
 
 
 app.use("/public", express.static("public"));
