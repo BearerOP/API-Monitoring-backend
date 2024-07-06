@@ -1,15 +1,15 @@
-const user_model = require("../models/user_model");
+const User = require("../models/user_model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-exports.user_login = async (req, res) => {
+const user_login = async (req, res) => {
   try {
-    const { mobile, password } = req.body;
-    const existingUser = await user_model.findOne({ mobile });
+    const { email, password } = req.body;
+    const existingUser = await User.findOne({ email });
     if (!existingUser) {
       return {
         success: false,
-        message: "Invalid mobile number or not registered!",
+        message: "Invalid email or not registered!",
       };
     }
 
@@ -31,7 +31,7 @@ exports.user_login = async (req, res) => {
     }
     // Set the token to cookies
     res.cookie("token", token);
-    const authKeyInsertion = await user_model.findOneAndUpdate(
+    const authKeyInsertion = await User.findOneAndUpdate(
       { _id: existingUser._id },
       { auth_key: token },
       { new: true }
@@ -55,10 +55,10 @@ exports.user_login = async (req, res) => {
   }
 };
 
-exports.user_register = async (req, res) => {
+const user_register = async (req, res) => {
   const { username, mobile, password, email } = req.body;
   try {
-    const existingUser = await user_model.findOne({ email });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return {
         message: "User already exists",
@@ -68,7 +68,7 @@ exports.user_register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await user_model.create({
+    const newUser = await User.create({
       username,
       mobile,
       password: hashedPassword,
@@ -95,13 +95,14 @@ exports.user_register = async (req, res) => {
   }
 };
 
-exports.user_logout = async (req, res) => {
+const user_logout = async (req, res) => {
   let user = req.user;
   try {
-    const currentUser = await user_model.findOneAndUpdate(
+    const currentUser = await User.findOneAndUpdate(
       { _id: user._id },
       { auth_key: null }
     );
+    res.user = null;
     res.clearCookie("token");
     if (currentUser) {
       return {
@@ -123,7 +124,7 @@ exports.user_logout = async (req, res) => {
   }
 };
 
-exports.user_profile = async (req, res) => {
+const user_profile = async (req, res) => {
   const user = req.user;
   try {
     if (!user) {
@@ -147,7 +148,7 @@ exports.user_profile = async (req, res) => {
   }
 };
 
-exports.profile_update = async (req, res) => {
+const profile_update = async (req, res) => {
   const user = req.user;
   if (!user) {
     return {
@@ -159,7 +160,7 @@ exports.profile_update = async (req, res) => {
 
   try {
     if (email) {
-      const existingUser = await user_model.findOne({ email });
+      const existingUser = await User.findOne({ email });
       if (existingUser) {
         return {
           success: false,
@@ -174,7 +175,7 @@ exports.profile_update = async (req, res) => {
 
     updatedFields.updated_at = new Date();
 
-    let updatedData = await user_model.findByIdAndUpdate(
+    let updatedData = await User.findByIdAndUpdate(
       user._id,
       updatedFields,
       { new: true }
@@ -198,3 +199,11 @@ exports.profile_update = async (req, res) => {
     };
   }
 };
+
+module.exports = {
+  user_login,
+  user_register,
+  user_logout,
+  user_profile,
+  profile_update
+}

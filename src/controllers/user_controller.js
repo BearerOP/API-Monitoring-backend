@@ -4,7 +4,6 @@ const {
   user_logout,
   user_profile,
   profile_update,
-
 } = require("../services/user_validation_service.js");
 
 exports.user_login = async (req, res) => {
