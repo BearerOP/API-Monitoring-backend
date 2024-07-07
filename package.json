@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BearerOP/API-Monitoring-Web.git"
+    "url": "git+https://github.com/BearerOP/API-Monitoring-backend.git"
   },
   "author": "BearerOP",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/BearerOP/API-Monitoring-Web/issues"
+    "url": "https://github.com/BearerOP/API-Monitoring-backend/issues"
   },
-  "homepage": "https://github.com/BearerOP/API-Monitoring-Web#readme",
+  "homepage": "https://github.com/BearerOP/API-Monitoring-backend#readme",
   "description": "",
   "dependencies": {
     "axios": "^1.7.2",
