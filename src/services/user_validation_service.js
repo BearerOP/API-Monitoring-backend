@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const user_login = async (req, res) => {
   try {
+    console.log('reached user login service');
     const { email, password } = req.body;
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
@@ -55,6 +56,8 @@ const user_login = async (req, res) => {
 };
 
 const user_register = async (req, res) => {
+  console.log('reached user sign up service');
+
   const { username, password, email } = req.body;
   try {
     const existingUser = await User.findOne({ email });
@@ -123,6 +126,8 @@ const user_logout = async (req, res) => {
 };
 
 const user_profile = async (req, res) => {
+  console.log('reached user service');
+
   const user = req.user;
   try {
     if (!user) {

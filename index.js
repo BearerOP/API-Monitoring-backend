@@ -19,6 +19,9 @@ app.set("view engine", "ejs");
 // CORS configuration
 const allowedOrigins = [
   "http://localhost:5173", 
+  'https://up-status-11uxcarh5-bearerops-projects.vercel.app',
+  'https://up-status-git-master-bearerops-projects.vercel.app',
+  'https://up-status-bearerops-projects.vercel.app',
   "https://up-status-xi.vercel.app/",
   "https://up-status.onrender.com" 
 ];
