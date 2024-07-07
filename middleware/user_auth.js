@@ -6,11 +6,11 @@ const user_model = require("../src/models/user_model.js");
 async function user_auth(req, res, next) {
   // Implement user auth logic
   try {
-    const token = req.cookies.token;
-    // const tokenHead = req.headers["authorization"];
+    // const token = req.cookies.token;
+    const tokenHead = req.headers["authorization"];
+    const token = tokenHead.split(" ")[1];
+    
     // console.log(tokenHead);
-
-    // const token = tokenHead.split(" ")[1];
     if (!token) {
       return res.status(401).json({ message: "User is not logged in" });
     }

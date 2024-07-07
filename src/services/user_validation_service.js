@@ -21,7 +21,7 @@ const user_login = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(403).json({
         success: false,
-        message: "Invalid mobile number or password",
+        message: "Invalid email or password",
       });
     }
 
@@ -29,8 +29,7 @@ const user_login = async (req, res) => {
     if (!token) {
       return res.json({ message: " Token generation failed" });
     }
-    // Set the token to cookies
-    res.cookie("token", token);
+
     const authKeyInsertion = await User.findOneAndUpdate(
       { _id: existingUser._id },
       { auth_key: token },
@@ -56,7 +55,7 @@ const user_login = async (req, res) => {
 };
 
 const user_register = async (req, res) => {
-  const { username, mobile, password, email } = req.body;
+  const { username, password, email } = req.body;
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -70,7 +69,6 @@ const user_register = async (req, res) => {
 
     const newUser = await User.create({
       username,
-      mobile,
       password: hashedPassword,
       email,
     });
@@ -156,7 +154,7 @@ const profile_update = async (req, res) => {
       message: "User not found",
     };
   }
-  const { username, mobile, email } = req.body;
+  const { username, email } = req.body;
 
   try {
     if (email) {
@@ -171,7 +169,6 @@ const profile_update = async (req, res) => {
     const updatedFields = {};
     if (username) updatedFields.username = username;
     if (email) updatedFields.email = email;
-    if (mobile) updatedFields.mobile = mobile;
 
     updatedFields.updated_at = new Date();
 
