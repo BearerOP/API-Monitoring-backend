@@ -48,7 +48,7 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
 // Routes
-app.use("/user", require("./src/routes/user_routes.js"));
+app.use("/api", require("./src/routes/user_routes.js"));
 app.use("/api", require("./src/routes/api_logs_routes.js"));
 app.use("/public", express.static("public"));
 
@@ -62,7 +62,7 @@ app.use(function (err, req, res, next) {
 const { connectDB } = require("./db/dbconnection.js");
 connectDB();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.port;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
