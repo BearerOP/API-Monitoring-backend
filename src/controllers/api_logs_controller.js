@@ -7,9 +7,8 @@ const {
 exports.addLogs = async (req, res) => {
   try {
     const data = await addLogs(req, res);
-    // res.send("hi")
     if (data.success) {
-      res.send(data);
+      res.status(200).json(data);
     } else {
       res.status(403).json(data);
     }
