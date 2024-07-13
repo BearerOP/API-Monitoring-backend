@@ -15,7 +15,7 @@ exports.user_login = async (req, res) => {
       res.status(403).json(data);
     }
   } catch (error) {
-    console.log("Error:", error);
+    res.json({ Error: error });
   }
 };
 
@@ -28,7 +28,7 @@ exports.user_register = async (req, res) => {
       res.status(403).json(data);
     }
   } catch (error) {
-    console.log("Error:", error);
+    res.json({ Error: error });
   }
 };
 exports.user_logout = async (req, res) => {
@@ -62,6 +62,6 @@ exports.profile_update = async (req, res) => {
       res.status(403).json(data);
     }
   } catch (error) {
-    console.log("Error:", error);
+    res.json({ Error: error });
   }
 };

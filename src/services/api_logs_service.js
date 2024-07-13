@@ -14,6 +14,7 @@ const addLogs = async (req, res) => {
         message: "User Unauthorized",
       };
     }
+
     let { url, method } = req.body;
 
     // Validate the HTTP method
@@ -33,14 +34,15 @@ const addLogs = async (req, res) => {
       method: method.toLowerCase(),
       url: url,
     });
-
+    
     endTime = Date.now();
 
     logData = {
-      status: response.status,
+      statusCode: response.status,
       statusText: response.statusText,
       responseTime: endTime - startTime,
       timestamp: new Date(),
+      status: response.status >= 200 && response.status < 300 ? 'Up' : 'Down',
     };
 
     const existingLog = await ApiLog.findOne({
@@ -70,8 +72,9 @@ const addLogs = async (req, res) => {
     endTime = Date.now();
 
     logData = {
-      status: error.response ? error.response.status : 500,
-      statusText: error.message,
+      statusCode: error.response ? error.response.status : 500,
+      statusText: error.response ? error.response.statusText : "Internal Server Error",
+      status: error.response && error.response.status >= 200 && error.response.status < 300 ? 'Up' : 'Down',
       responseTime: endTime - startTime,
       timestamp: new Date(),
     };
@@ -109,6 +112,7 @@ const addLogs = async (req, res) => {
     }
   }
 };
+
 
 const getLogs = async (req, res) => {
   const logId = req.query.logId;

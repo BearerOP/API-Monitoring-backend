@@ -5,7 +5,8 @@ const apiLogSchema = new mongoose.Schema({
   url: { type: String, required: true },
   method: { type: String, required: true },
   logs: [{
-    status: { type: Number, required: true },
+    status: { type: String, required: true },
+    statusCode: { type: Number},
     statusText: { type: String, required: true },
     responseTime: { type: Number, required: true },
     timestamp: { type: Date, default: Date.now },
