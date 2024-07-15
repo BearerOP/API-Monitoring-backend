@@ -34,7 +34,7 @@ const addLogs = async (req, res) => {
       method: method.toLowerCase(),
       url: url,
     });
-    
+
     endTime = Date.now();
 
     logData = {
@@ -42,7 +42,7 @@ const addLogs = async (req, res) => {
       statusText: response.statusText,
       responseTime: endTime - startTime,
       timestamp: new Date(),
-      status: response.status >= 200 && response.status < 300 ? 'Up' : 'Down',
+      status: response.status >= 200 && response.status < 300 ? "Up" : "Down",
     };
 
     const existingLog = await ApiLog.findOne({
@@ -73,8 +73,15 @@ const addLogs = async (req, res) => {
 
     logData = {
       statusCode: error.response ? error.response.status : 500,
-      statusText: error.response ? error.response.statusText : "Internal Server Error",
-      status: error.response && error.response.status >= 200 && error.response.status < 300 ? 'Up' : 'Down',
+      statusText: error.response
+        ? error.response.statusText
+        : "Internal Server Error",
+      status:
+        error.response &&
+        error.response.status >= 200 &&
+        error.response.status < 300
+          ? "Up"
+          : "Down",
       responseTime: endTime - startTime,
       timestamp: new Date(),
     };
@@ -113,6 +120,37 @@ const addLogs = async (req, res) => {
   }
 };
 
+const deleteLogs = async (req, res) => {
+  const logId = req.query.logId;
+  const user_id = req.user._id;
+  if (!user_id) {
+    return {
+      success: false,
+      message: "Unauthorized",
+    };
+  }
+  try {
+    const logs = await ApiLog.findOneAndDelete({ _id: logId, userId: user_id });
+    if (logs) {
+      return {
+        success: true,
+        message: "Logs deleted successfully",
+        data: logs,
+      };
+    } else {
+      return {
+        success: false,
+        message: "Error deleting logs",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: "Error deleting logs",
+      error: error.message,
+    };
+  }
+};
 
 const getLogs = async (req, res) => {
   const logId = req.query.logId;
@@ -178,4 +216,5 @@ module.exports = {
   addLogs,
   getLogs,
   getAllLogs,
+  deleteLogs,
 };

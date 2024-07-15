@@ -1,5 +1,6 @@
 const {
   addLogs,
+  deleteLogs,
   getLogs,
   getAllLogs,
 } = require("../services/api_logs_service.js");
@@ -7,6 +8,19 @@ const {
 exports.addLogs = async (req, res) => {
   try {
     const data = await addLogs(req, res);
+    if (data.success) {
+      res.status(200).json(data);
+    } else {
+      res.status(403).json(data);
+    }
+  } catch (error) {
+    res.json({ Error: error });
+  }
+};
+
+exports.deleteLogs = async (req, res) => {
+  try {
+    const data = await deleteLogs(req, res);
     if (data.success) {
       res.status(200).json(data);
     } else {
