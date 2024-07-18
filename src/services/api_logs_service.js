@@ -1,26 +1,22 @@
 const ApiLog = require("../models/api_logs_model");
-const User = require("../models/user_model");
 const axios = require("axios");
 
 const addLogs = async (req, res) => {
   let logData = {};
   let startTime, endTime;
+  const user = req.user;
 
   try {
-    const user = req.user;
     if (!user) {
       return {
-        status: 401,
+        success: false,
         message: "User Unauthorized",
       };
     }
 
     let { url, method } = req.body;
 
-    // Validate the HTTP method
-    if (
-      !["get", "post", "put", "delete", "patch"].includes(method.toLowerCase())
-    ) {
+    if (!["get", "post", "put", "delete", "patch"].includes(method.toLowerCase())) {
       return {
         success: false,
         message: "Invalid HTTP method",
@@ -29,7 +25,6 @@ const addLogs = async (req, res) => {
 
     startTime = Date.now();
 
-    // Perform the request
     const response = await axios({
       method: method.toLowerCase(),
       url: url,
@@ -73,24 +68,17 @@ const addLogs = async (req, res) => {
 
     logData = {
       statusCode: error.response ? error.response.status : 500,
-      statusText: error.response
-        ? error.response.statusText
-        : "Internal Server Error",
-      status:
-        error.response &&
-        error.response.status >= 200 &&
-        error.response.status < 300
-          ? "Up"
-          : "Down",
+      statusText: error.response ? error.response.statusText : "Internal Server Error",
+      status: error.response && error.response.status >= 200 && error.response.status < 300 ? "Up" : "Down",
       responseTime: endTime - startTime,
       timestamp: new Date(),
     };
 
     try {
       const existingLog = await ApiLog.findOne({
-        user_id: req.user._id,
-        url: req.body.url,
-        method: req.body.method.toUpperCase(),
+        user_id: user._id,
+        url: url,
+        method: method.toUpperCase(),
       });
 
       if (existingLog) {
@@ -98,9 +86,9 @@ const addLogs = async (req, res) => {
         await existingLog.save();
       } else {
         const newLog = new ApiLog({
-          user_id: req.user._id,
-          url: req.body.url,
-          method: req.body.method.toUpperCase(),
+          user_id: user._id,
+          url,
+          method: method.toUpperCase(),
           logs: [logData],
         });
         await newLog.save();
