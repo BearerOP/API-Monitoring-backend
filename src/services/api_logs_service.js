@@ -8,7 +8,7 @@ const addLogs = async (req, res) => {
 
   try {
     if (!user) {
-      return {
+      return{
         success: false,
         message: "User Unauthorized",
       };
@@ -17,13 +17,15 @@ const addLogs = async (req, res) => {
     let { url, method } = req.body;
 
     if (!["get", "post", "put", "delete", "patch"].includes(method.toLowerCase())) {
-      return {
+      return{
         success: false,
         message: "Invalid HTTP method",
-      };
+      }
     }
 
     startTime = Date.now();
+
+    console.log(url, method);
 
     const response = await axios({
       method: method.toLowerCase(),
@@ -39,6 +41,8 @@ const addLogs = async (req, res) => {
       timestamp: new Date(),
       status: response.status >= 200 && response.status < 300 ? "Up" : "Down",
     };
+
+    console.log(logData, url);
 
     const existingLog = await ApiLog.findOne({
       user_id: user._id,
@@ -59,11 +63,14 @@ const addLogs = async (req, res) => {
       await newLog.save();
     }
 
-    return {
+    return{
       success: true,
       message: "Log added successfully",
     };
   } catch (error) {
+
+    let { url, method } = req.body;
+
     endTime = Date.now();
 
     logData = {
@@ -73,6 +80,10 @@ const addLogs = async (req, res) => {
       responseTime: endTime - startTime,
       timestamp: new Date(),
     };
+
+    console.log(logData+'------------------');
+
+    console.error("Error during API call:", error.message);
 
     try {
       const existingLog = await ApiLog.findOne({
@@ -99,6 +110,7 @@ const addLogs = async (req, res) => {
         message: "Log added successfully",
       };
     } catch (logError) {
+      console.error("Error saving log:", logError.message);
       return {
         success: false,
         message: "Error saving log",
