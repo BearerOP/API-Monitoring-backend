@@ -66,7 +66,7 @@ app.use(function (err, req, res, next) {
 const { connectDB } = require("./db/dbconnection.js");
 connectDB();
 
-cron.schedule("*/2 * * * *", async () => {
+cron.schedule("*/20 * * * * *", async () => {
   console.log("Running periodic health check");
 
   try {
