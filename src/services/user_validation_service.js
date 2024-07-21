@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const user_login = async (req, res) => {
   try {
-    console.log('reached user login service');
+    console.log("reached user login service");
     const { email, password } = req.body;
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
@@ -56,7 +56,7 @@ const user_login = async (req, res) => {
 };
 
 const user_register = async (req, res) => {
-  console.log('reached user sign up service');
+  console.log("reached user sign up service");
 
   const { username, password, email } = req.body;
   try {
@@ -126,7 +126,7 @@ const user_logout = async (req, res) => {
 };
 
 const user_profile = async (req, res) => {
-  console.log('reached user service');
+  console.log("reached user service");
 
   const user = req.user;
   try {
@@ -177,11 +177,9 @@ const profile_update = async (req, res) => {
 
     updatedFields.updated_at = new Date();
 
-    let updatedData = await User.findByIdAndUpdate(
-      user._id,
-      updatedFields,
-      { new: true }
-    );
+    let updatedData = await User.findByIdAndUpdate(user._id, updatedFields, {
+      new: true,
+    });
     if (!updatedData) {
       return {
         success: false,
@@ -202,10 +200,56 @@ const profile_update = async (req, res) => {
   }
 };
 
+const password_update = async (req, res) => {
+  const user = req.user;
+  if (!user) {
+    return {
+      success: false,
+      message: "User not found",
+    };
+  }
+
+  const { new_password } = req.body;
+
+  try {
+    const userDetails = await User.findById(user._id);
+    if (!userDetails) {
+      return {
+        success: false,
+        message: "User not found",
+      };
+    }
+
+    const hashedPassword = await bcrypt.hash(new_password, 10);
+    userDetails.password = hashedPassword;
+    const savedDetail = await userDetails.save();
+
+    if (!savedDetail) {
+      return {
+        success: false,
+        message: "Password updation failed",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Password updated successfully",
+    };
+
+  } catch (err) {
+    return {
+      success: false,
+      message: "An error occurred while updating the password",
+      error: err.message,
+    };
+  }
+};
+
 module.exports = {
   user_login,
   user_register,
   user_logout,
   user_profile,
-  profile_update
-}
+  profile_update,
+  password_update,
+};

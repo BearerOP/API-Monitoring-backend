@@ -66,21 +66,21 @@ app.use(function (err, req, res, next) {
 const { connectDB } = require("./db/dbconnection.js");
 connectDB();
 
-cron.schedule("*/5 * * * *", async () => {
-  console.log("Running periodic health check");
+// cron.schedule("*/5 * * * *", async () => {
+//   console.log("Running periodic health check");
 
-  try {
-    const users = await User.find();
-    for (const user of users) {
-      const apiLogs = await ApiLog.find({ user_id: user._id });
-      for (const apiLog of apiLogs) {
-        await addLogs({ user, body: { url: apiLog.url, method: apiLog.method } }, {});
-      }
-    }
-  } catch (error) {
-    console.error("Error during periodic health check:", error.message);
-  }
-});
+//   try {
+//     const users = await User.find();
+//     for (const user of users) {
+//       const apiLogs = await ApiLog.find({ user_id: user._id });
+//       for (const apiLog of apiLogs) {
+//         await addLogs({ user, body: { url: apiLog.url, method: apiLog.method } }, {});
+//       }
+//     }
+//   } catch (error) {
+//     console.error("Error during periodic health check:", error.message);
+//   }
+// });
 
 const PORT = process.env.port;
 app.listen(PORT, () => {
