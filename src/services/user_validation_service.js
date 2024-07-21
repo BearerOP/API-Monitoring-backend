@@ -210,7 +210,12 @@ const password_update = async (req, res) => {
   }
 
   const { new_password } = req.body;
-
+  if (!new_password) {
+    return {
+      success: false,
+      message: "Password is required",
+    };
+  }
   try {
     const userDetails = await User.findById(user._id);
     if (!userDetails) {
@@ -235,7 +240,6 @@ const password_update = async (req, res) => {
       success: true,
       message: "Password updated successfully",
     };
-
   } catch (err) {
     return {
       success: false,
