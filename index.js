@@ -1,21 +1,23 @@
-const cookieParser = require("cookie-parser");
-const express = require("express");
-const dotenv = require("dotenv");
-const path = require("path");
-const cors = require("cors");
-const cron = require("node-cron");
-const User = require("./src/models/user_model");
-const ApiLog = require("./src/models/api_logs_model.js");
-const { addLogs } = require("./src/services/api_logs_service");
+const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
+const cron = require('node-cron');
+const User = require('./src/models/user_model');
+const ApiLog = require('./src/models/api_logs_model');
+const { addLogs } = require('./src/services/api_logs_service');
+const { connectDB } = require('./db/dbconnection');
 
+// Load environment variables from .env file
 dotenv.config();
+
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
 
 app.use(express.static(path.join(__dirname, "public")));
 app.set("views", path.join(__dirname, "src/views"));
@@ -63,26 +65,27 @@ app.use(function (err, req, res, next) {
 });
 
 // Database connection and server start
-const { connectDB } = require("./db/dbconnection.js");
 connectDB();
 
-cron.schedule("*/5 * * * *", async () => {
-  console.log("Running periodic health check");
-
-  try {
-    const users = await User.find();
-    for (const user of users) {
-      const apiLogs = await ApiLog.find({ user_id: user._id });
-      for (const apiLog of apiLogs) {
-        await addLogs({ user, body: { url: apiLog.url, method: apiLog.method } }, {});
+// Conditionally schedule cron job
+if (process.env.ENVIRONMENT === 'production') {
+  cron.schedule("*/5 * * * *", async () => {
+    console.log("Running periodic health check");
+    try {
+      const users = await User.find();
+      for (const user of users) {
+        const apiLogs = await ApiLog.find({ user_id: user._id });
+        for (const apiLog of apiLogs) {
+          await addLogs({ user, body: { url: apiLog.url, method: apiLog.method } }, {});
+        }
       }
+    } catch (error) {
+      console.error("Error during periodic health check:", error.message);
     }
-  } catch (error) {
-    console.error("Error during periodic health check:", error.message);
-  }
-});
+  });
+}
 
-const PORT = process.env.port;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
+  console.log(`App listening on port ${PORT} on ${process.env.ENVIRONMENT}`);
 });
