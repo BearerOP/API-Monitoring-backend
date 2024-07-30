@@ -20,15 +20,18 @@ const user_login = async (req, res) => {
     );
 
     if (!isPasswordValid) {
-      return res.status(403).json({
+      return {
         success: false,
         message: "Invalid email or password",
-      });
+      };
     }
 
     const token = jwt.sign({ id: existingUser._id }, process.env.SECRET_KEY);
     if (!token) {
-      return res.json({ message: " Token generation failed" });
+      return { 
+        success:'false',
+        message: " Token generation failed" 
+      };
     }
 
     const authKeyInsertion = await User.findOneAndUpdate(
@@ -38,7 +41,7 @@ const user_login = async (req, res) => {
     );
 
     if (!authKeyInsertion) {
-      return res.json({ message: "Token updation failed" });
+      return { message: "Token updation failed" };
     }
 
     return {
