@@ -256,8 +256,6 @@ const password_update = async (req, res) => {
   }
 };
 const forgot_password = async (req, res) => {
-  console.log('reached fp');
-  
   let CLIENT_URL = "";
   if (process.env.ENVIRONMENT === "development") {
     CLIENT_URL = "http://localhost:5173";
