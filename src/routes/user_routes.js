@@ -9,7 +9,9 @@ const {
   user_logout,
   user_profile,
   profile_update,
-  password_update
+  password_update,
+  forgot_password,
+  reset_password,
 } = require("../controllers/user_controller.js");
 
 router.post("/login", user_login);
@@ -23,5 +25,9 @@ router.get("/profile", user_auth, user_profile);
 router.put("/profile/update", user_auth, profile_update);
 
 router.put("/profile/password/update", user_auth, password_update);
+
+router.post('/forgot-password',forgot_password)
+
+router.post('/reset-password', reset_password);
 
 module.exports = router;

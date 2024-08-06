@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
@@ -15,6 +16,14 @@ const userSchema = new mongoose.Schema({
   },
   auth_key: {
     type: String,
+    default: null,
+  },
+  resetToken: {
+    type: String,
+    default: null,
+  },
+  resetTokenExp: {
+    type: Date,
     default: null,
   },
   created_at: {

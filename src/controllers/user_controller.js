@@ -4,7 +4,9 @@ const {
   user_logout,
   user_profile,
   profile_update,
-  password_update
+  password_update,
+  forgot_password,
+  reset_password
 } = require("../services/user_validation_service.js");
 
 exports.user_login = async (req, res) => {
@@ -70,6 +72,32 @@ exports.profile_update = async (req, res) => {
 exports.password_update = async (req, res) => {
   try {
     const data = await password_update(req, res);
+    if (data.success) {
+      res.status(200).json(data);
+    } else {
+      res.status(403).json(data);
+    }
+  } catch (error) {
+    res.json({ Error: error });
+  }
+};
+
+exports.forgot_password = async (req, res) => {
+  try {
+    const data = await forgot_password(req, res);
+    if (data.success) {
+      res.status(200).json(data);
+    } else {
+      res.status(403).json(data);
+    }
+  } catch (error) {
+    res.json({ Error: error });
+  }
+};
+
+exports.reset_password = async (req, res) => {
+  try {
+    const data = await reset_password(req, res);
     if (data.success) {
       res.status(200).json(data);
     } else {
