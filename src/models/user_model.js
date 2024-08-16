@@ -38,6 +38,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  accessToken:{
+    type: String,
+    default: null
+  }
 });
 
 const User = mongoose.model("User", userSchema);
