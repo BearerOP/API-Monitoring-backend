@@ -24,40 +24,28 @@ app.set("views", path.join(__dirname, "src/views"));
 app.set("view engine", "ejs");
 
 // CORS configuration
-// const allowedOrigins = [
-//   "http://localhost:5173",
-//   "https://up-status-11uxcarh5-bearerops-projects.vercel.app",
-//   "https://up-status-git-master-bearerops-projects.vercel.app",
-//   "https://up-status-bearerops-projects.vercel.app",
-//   "https://up-status-xi.vercel.app",
-//   "https://up-status.onrender.com"
-// ];
-
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     console.log('Requested Origin:', origin);
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error("Not allowed by CORS"));
-//     }
-//   },
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//   credentials: true,
-//   allowedHeaders: ['Content-Type', 'Authorization']
-// };
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://up-status-11uxcarh5-bearerops-projects.vercel.app",
+  "https://up-status-git-master-bearerops-projects.vercel.app",
+  "https://up-status-bearerops-projects.vercel.app",
+  "https://up-status-xi.vercel.app",
+  "https://up-status.onrender.com"
+];
 
 const corsOptions = {
-  origin: '*', // Allows requests from any origin
+  origin: function (origin, callback) {
+    console.log('Requested Origin:', origin);
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
 };
-
-app.use(cors(corsOptions));
-
-// CORS preflight
-app.options('*', cors(corsOptions));
 
 // Enable CORS
 app.use(cors(corsOptions));
