@@ -54,6 +54,9 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
 // Routes
+app.use("/root", (req,res)=>{
+  res.send('API Monitoring Backend');
+});
 app.use("/api", require("./src/routes/user_routes.js"));
 app.use("/api", require("./src/routes/api_logs_routes.js"));
 app.use("/public", express.static("public"));
