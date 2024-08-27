@@ -19,10 +19,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, "public")));
-app.set("views", path.join(__dirname, "src/views"));
-app.set("view engine", "ejs");
-
 // CORS configuration
 const allowedOrigins = [
   "http://localhost:5173",
