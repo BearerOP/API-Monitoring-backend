@@ -12,4 +12,4 @@ jobs:
     steps:
       - name: Make HTTP Request
         run: |
-          curl -X POST curl -X POSThttps://up-status.onrender.com/api/health-check
+          curl -X POST curl -X POST https://up-status.onrender.com/api/health-check
