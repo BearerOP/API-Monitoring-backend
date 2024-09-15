@@ -48,20 +48,17 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
 // Routes
-app.use("/root", (req,res)=>{
+app.use("/root", (req, res) => {
   res.send('API Monitoring Backend');
 });
 app.use("/api", require("./src/routes/user_routes.js"));
 app.use("/api", require("./src/routes/api_logs_routes.js"));
 app.use("/public", express.static("public"));
 
-
-// Database connection and server start
-connectDB();
-
 // Health check route
 app.post('/api/health-check', async (req, res) => {
   try {
+    // Ensure that this endpoint is accessible and does not require additional headers or authentication
     const users = await User.find();
     for (const user of users) {
       const apiLogs = await ApiLog.find({ user_id: user._id });
@@ -82,7 +79,10 @@ app.use(function (err, req, res, next) {
   res.status(500).send('Internal Server Error');
 });
 
-const PORT = process.env.PORT;
+// Database connection and server start
+connectDB();
+
+const PORT = process.env.PORT || 3000; // Default to 3000 if PORT is not set
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT} on ${process.env.ENVIRONMENT}`);
 });
