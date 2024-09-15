@@ -7,12 +7,12 @@ const addLogs = async (req, res) => {
   const user = req.user;
 
   try {
-    if (!user) {
-      return{
-        success: false,
-        message: "User Unauthorized",
-      };
-    }
+    // if (!user) {
+    //   return{
+    //     success: false,
+    //     message: "User Unauthorized",
+    //   };
+    // }
 
     let { url, method } = req.body;
 
