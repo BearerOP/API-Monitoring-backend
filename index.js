@@ -1,9 +1,7 @@
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const express = require('express');
-const path = require('path');
 const cors = require('cors');
-const cron = require('node-cron');
 const User = require('./src/models/user_model');
 const ApiLog = require('./src/models/api_logs_model');
 const { addLogs } = require('./src/services/api_logs_service');
@@ -57,32 +55,32 @@ app.use("/api", require("./src/routes/user_routes.js"));
 app.use("/api", require("./src/routes/api_logs_routes.js"));
 app.use("/public", express.static("public"));
 
+
+// Database connection and server start
+connectDB();
+
+// Health check route
+app.post('/api/health-check', async (req, res) => {
+  try {
+    const users = await User.find();
+    for (const user of users) {
+      const apiLogs = await ApiLog.find({ user_id: user._id });
+      for (const apiLog of apiLogs) {
+        await addLogs({ user, body: { url: apiLog.url, method: apiLog.method } }, {});
+      }
+    }
+    res.status(200).send("Health check completed");
+  } catch (error) {
+    console.error("Error during health check:", error.message);
+    res.status(500).send("Health check failed");
+  }
+});
+
 // Error handling middleware
 app.use(function (err, req, res, next) {
   console.error(err.stack);
   res.status(500).send('Internal Server Error');
 });
-
-// Database connection and server start
-connectDB();
-
-// Conditionally schedule cron job
-if (process.env.ENVIRONMENT === 'production') {
-  cron.schedule("*/5 * * * *", async () => {
-    console.log("Running periodic health check");
-    try {
-      const users = await User.find();
-      for (const user of users) {
-        const apiLogs = await ApiLog.find({ user_id: user._id });
-        for (const apiLog of apiLogs) {
-          await addLogs({ user, body: { url: apiLog.url, method: apiLog.method } }, {});
-        }
-      }
-    } catch (error) {
-      console.error("Error during periodic health check:", error.message);
-    }
-  });
-}
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
