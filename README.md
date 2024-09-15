@@ -56,7 +56,7 @@ By default, the server will run on `http://localhost:3000`.
 
 The project uses GitHub Actions to run a cron job every 5 minutes. This cron job will make an HTTP request to the health check endpoint to monitor the API's uptime.
 
-1. **Create a GitHub Workflow**: Add a new workflow file in `.github/workflows/cron-job.yml`:
+1. **Create a GitHub Workflow**: Add a new workflow file in `.github/workflows/health-check.yml`:
 
    ```yaml
    name: Periodic Health Check
@@ -79,7 +79,7 @@ The project uses GitHub Actions to run a cron job every 5 minutes. This cron job
 2. **Commit and Push**: Commit the workflow file and push it to your GitHub repository:
 
    ```bash
-   git add .github/workflows/cron-job.yml
+   git add .github/workflows/health-check.yml
    git commit -m "Add periodic health check cron job"
    git push origin main
    ```
@@ -93,7 +93,7 @@ The project structure is as follows:
 ```bash
 ├── .github
 │   └── workflows
-│       └── cron-job.yml        # GitHub Actions workflow file for cron jobs
+│       └── health-check.yml        # GitHub Actions workflow file for cron jobs
 ├── public                      # Public assets
 ├── src
 │   ├── models                  # Mongoose models for User and ApiLog
