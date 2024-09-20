@@ -2,7 +2,7 @@ name: Periodic Health Check
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # Runs every 5 minutes
+    - cron: '*/45 * * * *' # Runs every 5 minutes
   workflow_dispatch: # Allows manual triggering from the GitHub Actions UI
 
 jobs:
@@ -12,4 +12,4 @@ jobs:
     steps:
       - name: Make HTTP Request
         run: |
-          curl -X POST curl -X POST https://up-status.onrender.com/api/health-check
+          curl -X POST curl -X POST https://api-monitoring-backend-79dn.onrender.com
