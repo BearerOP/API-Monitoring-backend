@@ -17,10 +17,7 @@ async function user_auth(req, res, next) {
 
     const jwtPassword = process.env.SECRET_KEY;
     const decode = await jwt.verify(token, jwtPassword);
-    let user = await user_model
-      .findOne({ _id: decode.id })
-      .select("-password -auth_key ")
-      .exec();
+    const user = decode.user;    
     if (!user) return res.status(403).json({ msg: "User not found" });
 
     req.user = user;
